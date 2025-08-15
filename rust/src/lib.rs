@@ -2,10 +2,10 @@ use godot::classes::ISprite2D;
 use godot::classes::Sprite2D;
 use godot::prelude::*;
 
-struct MyExtension;
+struct Meetia;
 
 #[gdextension]
-unsafe impl ExtensionLibrary for MyExtension {}
+unsafe impl ExtensionLibrary for Meetia {}
 
 #[derive(GodotClass)]
 #[class(base=Sprite2D)]
