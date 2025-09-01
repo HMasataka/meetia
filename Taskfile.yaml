@@ -56,7 +56,21 @@ tasks:
       - godot-run
 
   copy:
-    desc: Copy project files from WSL to host using local script
+    desc: |
+      Copy project files from WSL to host using local script.
+
+      NOTE: You need to create .local/copy.sh manually.
+      This file contains path information and is not included in git.
+
+      Sample .local/copy.sh:
+      #!/bin/bash
+      # Copy entire project to Windows host
+      SRC_DIR="/home/masataka/go/src/github.com/HMasataka/meetia"
+      DST_DIR="/mnt/c/Users/YourName/Documents/meetia"
+
+      mkdir -p "$DST_DIR"
+      rsync -av --exclude='.git' --exclude='target' --exclude='node_modules' "$SRC_DIR/" "$DST_DIR/"
+      echo "Project copied to $DST_DIR"
     deps:
       - clean
     cmds:
