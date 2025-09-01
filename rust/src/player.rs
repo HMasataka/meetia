@@ -1,4 +1,4 @@
-use godot::classes::{INode3D, Input, Node3D};
+use godot::classes::{Camera3D, INode3D, Input, Node, Node3D};
 use godot::prelude::*;
 
 #[derive(GodotClass)]
@@ -6,6 +6,8 @@ use godot::prelude::*;
 pub struct Player3D {
     speed: f32,
     rotation_speed: f32,
+    camera_distance: f32,
+    camera_height: f32,
     base: Base<Node3D>,
 }
 
@@ -28,8 +30,29 @@ impl INode3D for Player3D {
         Self {
             speed: 5.0,
             rotation_speed: 2.0,
+            camera_distance: 10.0,
+            camera_height: 5.0,
             base,
         }
+    }
+
+    fn ready(&mut self) {
+        // カメラを作成してプレイヤーの子として追加
+        let mut camera = Camera3D::new_alloc();
+
+        // カメラの初期位置を設定（プレイヤーの後ろ上方）
+        camera.set_position(Vector3::new(0.0, self.camera_height, self.camera_distance));
+
+        // カメラを少し下向きに傾ける
+        camera.rotate_x(-0.3); // 約17度下向き
+
+        // このカメラをアクティブ（現在のカメラ）に設定
+        camera.make_current();
+
+        // カメラをプレイヤーの子として追加
+        self.base_mut().add_child(&camera.upcast::<Node>());
+
+        godot_print!("Follow camera added to player and set as current camera");
     }
 
     fn physics_process(&mut self, delta: f64) {
