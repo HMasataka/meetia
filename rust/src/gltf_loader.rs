@@ -17,6 +17,33 @@ impl OnlineGltfLoader {
         self.url = url;
     }
 
+    // モデルの方向を修正するためのヘルパーメソッド
+    fn correct_model_orientation(node: &mut Gd<Node3D>) {
+        // glTFモデルは多くの場合、Y軸が上向きで設計されているが、
+        // Godotでは異なる座標系を使用する場合があります。
+        // 一般的な修正:
+        // 1. Y軸周りに180度回転（前後を反転）
+        // 2. X軸周りに-90度回転（Y-up を Z-up に変換）
+
+        // モデルを正しい向きに調整
+        node.rotate_y(std::f32::consts::PI / 2.0); // 90度回転
+
+        // 必要に応じてスケール調整
+        let current_scale = node.get_scale();
+        if current_scale.length() < 0.1 {
+            // モデルが小さすぎる場合はスケールアップ
+            node.set_scale(Vector3::new(10.0, 10.0, 10.0));
+        } else if current_scale.length() > 50.0 {
+            // モデルが大きすぎる場合はスケールダウン
+            node.set_scale(Vector3::new(0.1, 0.1, 0.1));
+        }
+
+        godot_print!(
+            "Model orientation corrected: rotation_y=90°, scale={}",
+            node.get_scale()
+        );
+    }
+
     // HttpRequest のシグナルを受けるメソッド
     #[func]
     fn _on_request_completed(
@@ -47,13 +74,21 @@ impl OnlineGltfLoader {
 
         // シーン化してツリーに追加
         if let Some(scene_root) = doc.generate_scene(&state) {
+            // モデルの方向を修正（多くのglTFモデルは初期状態で回転が必要）
+            let corrected_scene = if let Ok(mut node3d) = scene_root.clone().try_cast::<Node3D>() {
+                Self::correct_model_orientation(&mut node3d);
+                node3d.upcast::<Node>()
+            } else {
+                scene_root
+            };
+
             // Player3Dコントローラーをシーンに追加
             let mut player_controller = crate::player::Player3D::new_alloc();
             player_controller.bind_mut().set_speed(3.0);
             player_controller.bind_mut().set_rotation_speed(1.5);
 
             // GLTFモデルをプレイヤーコントローラーの子として追加
-            player_controller.add_child(&scene_root.upcast::<Node>());
+            player_controller.add_child(&corrected_scene.upcast::<Node>());
 
             // プレイヤーコントローラーをシーンに追加
             self.base_mut()
