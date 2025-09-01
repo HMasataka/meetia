@@ -47,7 +47,17 @@ impl OnlineGltfLoader {
 
         // シーン化してツリーに追加
         if let Some(scene_root) = doc.generate_scene(&state) {
-            self.base_mut().add_child(&scene_root.upcast::<Node>());
+            // Player3Dコントローラーをシーンに追加
+            let mut player_controller = crate::player::Player3D::new_alloc();
+            player_controller.bind_mut().set_speed(3.0);
+            player_controller.bind_mut().set_rotation_speed(1.5);
+
+            // GLTFモデルをプレイヤーコントローラーの子として追加
+            player_controller.add_child(&scene_root.upcast::<Node>());
+
+            // プレイヤーコントローラーをシーンに追加
+            self.base_mut()
+                .add_child(&player_controller.upcast::<Node>());
         }
     }
 }
@@ -85,4 +95,3 @@ impl INode3D for OnlineGltfLoader {
         }
     }
 }
-
