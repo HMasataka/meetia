@@ -8,4 +8,6 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 10, 0)
 
+[node name="WorldBuilder" type="WorldBuilder" parent="."]
+
 [node name="OnlineGltfLoader" type="OnlineGltfLoader" parent="."]
