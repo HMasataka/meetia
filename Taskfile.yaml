@@ -1,0 +1,64 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Build the Rust library for Godot
+    dir: rust
+    cmds:
+      - cargo build
+
+  build-release:
+    desc: Build the Rust library for Godot in release mode
+    dir: rust
+    cmds:
+      - cargo build --release
+
+  clean:
+    desc: Clean build artifacts
+    dir: rust
+    cmds:
+      - cargo clean
+
+  check:
+    desc: Check Rust code without building
+    dir: rust
+    cmds:
+      - cargo check
+
+  fmt:
+    desc: Format Rust code
+    dir: rust
+    cmds:
+      - cargo fmt
+
+  clippy:
+    desc: Run Clippy linter on Rust code
+    dir: rust
+    cmds:
+      - cargo clippy
+
+  test:
+    desc: Run Rust tests
+    dir: rust
+    cmds:
+      - cargo test
+
+  godot-run:
+    desc: Run Godot project
+    dir: godot
+    cmds:
+      - godot --headless --quit-after 1 || godot
+
+  dev:
+    desc: Development workflow - build and run
+    deps:
+      - build
+      - godot-run
+
+  all:
+    desc: Full build and check pipeline
+    deps:
+      - fmt
+      - clippy
+      - build
+      - test
