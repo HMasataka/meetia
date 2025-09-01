@@ -55,6 +55,13 @@ tasks:
       - build
       - godot-run
 
+  copy:
+    desc: Copy project files from WSL to host using local script
+    deps:
+      - clean
+    cmds:
+      - sh .local/copy.sh
+
   all:
     desc: Full build and check pipeline
     deps:
