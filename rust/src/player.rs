@@ -65,7 +65,7 @@ impl INode3D for Player3D {
 
             // Transform movement based on current rotation
             let transform = self.base().get_transform();
-            let forward = -transform.basis.col_c(); // Z axis (forward)
+            let forward = transform.basis.col_c(); // Z axis (forward)
             let right = transform.basis.col_a(); // X axis (right)
 
             let world_movement = forward * movement.z + right * movement.x;
@@ -82,4 +82,3 @@ impl INode3D for Player3D {
         }
     }
 }
-
