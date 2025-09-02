@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="godot"
-run/main_scene="res://gltf.tscn"
+run/main_scene="res://vr_scene.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[xr]
+
+openxr/enabled=true
+openxr/default_action_map="res://openxr_action_map.tres"
 
 [input]
 
